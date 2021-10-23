@@ -1,23 +1,39 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState, useEffect} from 'react';
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+const apikey = "API-key-goes-here";
 
-function App() {
+function App () {
+  const [requestData, setRequestData] = useState('');
+
+  useEffect(() => {
+    console.log("useeffect call here");
+    getCovidData();
+
+    
+  }, []);
+
+  function getCovidData(county, month) {
+    let request = new XMLHttpRequest();
+    //TODO: get fips code
+    let fips_code = 13067;
+    request.open("GET", `https://api.covidactnow.org/v2/county/${fips_code}.json?apiKey=${apikey}`);
+    console.log("sending api request");
+    request.onload = () => {
+      console.log("received api response");
+      console.log(request.response);
+      let response = JSON.parse(request.response)
+      setRequestData(Object.entries(response.actuals.icuBeds).toString());
+    };
+    request.send()
+  }
+
   return (
+
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <b>filler text</b>
+      <br/>
+      <b>{requestData}</b>
     </div>
   );
 }
