@@ -1,6 +1,6 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+// import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Select from 'react-select'
 import { hospital_list } from './data/hospital_list';
 
@@ -13,7 +13,7 @@ function App () {
   const [icuRatio, setIcuRatio] = useState('')
 
   useEffect(() => {
-    console.log("useeffect call here");
+    // console.log("useeffect call here");
     getCovidData();    
   }, []);
 
@@ -27,25 +27,24 @@ function App () {
     request.onload = () => {
       // received api response
       // console.log(request.status);
-      if (request.status == 200) {
+      if (request.status === 200) {
         // hospital was found
         let response = JSON.parse(request.response)
         let icuData = Object.entries(response.actuals.icuBeds)
         if (icuData[0][1] === null) {
           // hospital did not report ICU data
           setRequestData("This hospital does not report ICU data. Please enter it below.")
-          setIcuRatio("")
+          setIcuRatio("This hospital does not report ICU data. Please enter it below.")
         } else {
           // found ICU data
           setRequestData(icuData.toString());
-          console.log(`${icuData[1][1]}/${icuData[0][1]}`)
-          setIcuRatio(icuData[1][1]/icuData[0][1])
+          setIcuRatio(`ICU Usage Ratio: ${(icuData[1][1]/icuData[0][1]).toFixed(2)} (beds in use: ${icuData[1][1]}, capacity: ${icuData[0][1]})`)
           return response    
         }
       } else {
         // hospital not found
         setRequestData("Could not find hospital data. Please try again later.")
-        setIcuRatio("")
+        setIcuRatio("Could not find hospital data. Please try again later.")
       }
     };
     request.send()
@@ -65,7 +64,7 @@ function App () {
           let response = getCovidData(item.fips)
           // console.log(Object.entries(response.actuals.icuBeds).toString())
         }}/>
-      <b>{requestData}</b>
+      {/* <b>{requestData}</b> */}
       <br/>
       <b>{icuRatio}</b>
     </div>
